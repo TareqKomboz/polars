@@ -2239,3 +2239,12 @@ def test_repeat_by() -> None:
     calculated = pl.select(a=pl.Series("a", [1, 2]).repeat_by(2))
     expected = pl.select(a=pl.Series("a", [[1, 1], [2, 2]]))
     assert calculated.equals(expected)
+
+
+def test_top_k_by_series():
+    a = pl.Series("a", [1, 3, 2, 4])
+    # ohne reverse: top_k_by sollte die zwei größten Werte zurückliefern
+    assert a.top_k_by(k=2, by=a).to_list() == [4, 3]
+    # mit reverse=True: es verhält sich wie bottom_k
+    assert a.top_k_by(k=2, by=a, reverse=True).to_list() == [1, 2]
+    
